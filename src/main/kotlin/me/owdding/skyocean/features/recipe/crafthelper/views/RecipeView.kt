@@ -380,6 +380,11 @@ class WidgetBuilder(val includeParentOverride: Boolean? = null, val refreshCallb
                 append(available.toFormattedString())
                 append("/") { color = TextColor.GRAY }
                 append(needed.toFormattedString())
+                if (CraftHelperConfig.countdown && available > 0 && (needed - available) > 0) {
+                    append(" (") { color = TextColor.GRAY }
+                    append((needed - available).toFormattedString())
+                    append(")") { color = TextColor.GRAY }
+                }
 
                 this.color = ARGB.linearLerp(available.toFloat() / needed.toFloat(), TextColor.RED, TextColor.GREEN)
             }

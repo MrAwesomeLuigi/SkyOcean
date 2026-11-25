@@ -881,6 +881,10 @@
             "@value": "Enable overlay background",
             "desc": "Adds a background behind the overlay to make it more readable."
           },
+          "countdown": {
+            "@value": "Countdown",
+            "desc": "Adds a countdown next to the item count."
+          },
           "transformers": {
             "@value": "Tree transformers",
             "desc": "The following settings will alter the recipe tree in different ways, letting you customize the appearance and complexity.",

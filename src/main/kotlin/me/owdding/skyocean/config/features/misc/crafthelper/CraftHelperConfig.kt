@@ -65,6 +65,10 @@ object CraftHelperConfig : CategoryKt("crafthelper") {
         translation = "skyocean.config.misc.crafthelper.overlay_background"
     }
 
+    var countdown by boolean(false) {
+        translation = "skyocean.config.misc.crafthelper.countdown"
+    }
+
     init {
         separator("skyocean.config.misc.crafthelper.transformers")
     }
