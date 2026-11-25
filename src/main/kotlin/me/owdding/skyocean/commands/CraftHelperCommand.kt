@@ -28,12 +28,14 @@ import tech.thatgravyboat.skyblockapi.api.events.base.Subscription
 import tech.thatgravyboat.skyblockapi.api.remote.api.SkyBlockId
 import tech.thatgravyboat.skyblockapi.helpers.McClient
 import tech.thatgravyboat.skyblockapi.utils.extentions.replaceWith
+import tech.thatgravyboat.skyblockapi.utils.extentions.stripColor
 import tech.thatgravyboat.skyblockapi.utils.extentions.toFormattedString
 import tech.thatgravyboat.skyblockapi.utils.json.Json.readJson
 import tech.thatgravyboat.skyblockapi.utils.json.Json.toData
 import tech.thatgravyboat.skyblockapi.utils.text.Text
 import tech.thatgravyboat.skyblockapi.utils.text.TextBuilder.append
 import tech.thatgravyboat.skyblockapi.utils.text.TextColor
+import tech.thatgravyboat.skyblockapi.utils.text.TextProperties.stripped
 import tech.thatgravyboat.skyblockapi.utils.text.TextStyle.color
 import java.util.zip.GZIPInputStream
 import kotlin.io.encoding.Base64
@@ -51,6 +53,20 @@ object CraftHelperCommand {
             } ?: return null
 
             return SkyOceanItemIngredient(id, amount)
+        }
+
+        fun ifRecipe(input: String): ItemLikeIngredient? {
+            var amount = 1
+            SimpleRecipeApi.recipes.reversed().forEach { recipe ->
+                recipe.output?.let {
+                    val name = it.itemName.stripped.takeUnless { name -> name == "Unknown item: ${it.id}" } ?: return@let
+                    if (name.lowercase() == input.lowercase().stripColor()) return SkyOceanItemIngredient(it.id, amount)
+                    val splitName = input.substringBeforeLast(" ")
+                    amount = input.substringAfterLast(" ").toIntOrNull() ?: 1
+                    if (name.lowercase() == splitName.lowercase().stripColor()) return SkyOceanItemIngredient(it.id, amount)
+                }
+            }
+            return null
         }
 
         event.command("multi_recipe") {
@@ -178,7 +194,7 @@ object CraftHelperCommand {
                 StringArgumentType.greedyString(),
                 CombinedSuggestionProvider(RecipeIdSuggestionProvider, RecipeNameSuggestionProvider),
             ) executes { input ->
-                val item = toId(input) ?: return@executes CraftHelperStorage.setSelected(null)
+                val item = toId(input) ?: ifRecipe(input) ?: return@executes CraftHelperStorage.setSelected(null)
                 CraftHelperStorage.setSelected(item.id)
                 val craftAmount = item.let(SimpleRecipeApi::getBestRecipe)?.output?.amount ?: 1
                 CraftHelperStorage.setAmount(Utils.nextUp(item.amount, craftAmount))

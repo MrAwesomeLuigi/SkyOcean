@@ -77,7 +77,7 @@ data class CustomRecipeIngredient(val parents: List<Ingredient>, val name: Compo
     private val uuid = UuidKey(Uuid.random())
     override fun withAmount(amount: Int): Ingredient = this
     override val skyblockId: String = "bedrock"
-    override val id: SkyBlockId = SkyBlockId.item("bedrock")
+    override val id: SkyBlockId = SkyBlockId.item(skyblockId)
     override val item: ItemStack
         get() = ItemBuilder(Items.PAPER) {
             set(
@@ -129,10 +129,26 @@ enum class CurrencyType(val displayName: Component) {
 }
 
 @GenerateCodec
-data class CurrencyIngredient(override val amount: Int, val currency: CurrencyType) : Ingredient {
+data class CurrencyIngredient(override val amount: Int, val currency: CurrencyType) : ItemLikeIngredient {
     override fun withAmount(amount: Int): Ingredient = CurrencyIngredient(amount, currency)
     val displayName: Component get() = currency.displayName
     override val type: IngredientType = IngredientType.CURRENCY
+    private val uuid = UuidKey(Uuid.random())
+    override val skyblockId: String = "ocean:${currency.name.lowercase()}"
+    override val id: SkyBlockId = SkyBlockId.unsafe(skyblockId)
+    override val item: ItemStack
+        get() = ItemBuilder(Items.PAPER) {
+            set(
+                DataComponents.CUSTOM_DATA,
+                CustomData.of(
+                    compoundTag {
+                        putString("skyocean:static_item", uuid.uuid.toString())
+                    },
+                ),
+            )
+            name(displayName)
+        }
+    override val itemName: Component get() = item.hoverName
 
     companion object {
         fun coins(amount: Int) = CurrencyIngredient(amount, CurrencyType.COIN)
@@ -140,8 +156,8 @@ data class CurrencyIngredient(override val amount: Int, val currency: CurrencyTy
 }
 
 fun Ingredient.serialize(): String = when (this) {
-    is ItemLikeIngredient -> this.id.id
     is CurrencyIngredient -> "ocean:${currency.name.lowercase()}"
+    is ItemLikeIngredient -> this.id.id
     else -> throw UnsupportedOperationException("Can't serialize $this")
 }
 
