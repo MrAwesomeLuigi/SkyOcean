@@ -9,6 +9,7 @@ import me.owdding.skyocean.features.recipe.serialize
 import me.owdding.skyocean.utils.Utils.mapToMutableList
 import net.minecraft.world.item.ItemStack
 import tech.thatgravyboat.skyblockapi.api.area.farming.TrapperAPI
+import tech.thatgravyboat.skyblockapi.api.area.hub.CarnivalAPI
 import tech.thatgravyboat.skyblockapi.api.area.hub.FarmhouseAPI
 import tech.thatgravyboat.skyblockapi.api.area.rift.RiftAPI
 import tech.thatgravyboat.skyblockapi.api.profile.currency.CurrencyAPI
@@ -22,7 +23,7 @@ data class ItemTracker(val sources: Iterable<ItemSources> = ItemSources.entries)
         CurrencyType.COIN to (CurrencyAPI.bank + CurrencyAPI.purse).floor(),
         CurrencyType.BIT to CurrencyAPI.bits,
         CurrencyType.COPPER to CurrencyAPI.copper,
-        CurrencyType.FOSSIL_DUST to 0,
+        // CurrencyType.FOSSIL_DUST to 0,
         CurrencyType.BRONZE_MEDAL to FarmhouseAPI.bronzeMedals,
         CurrencyType.SILVER_MEDAL to FarmhouseAPI.silverMedals,
         CurrencyType.GOLD_MEDAL to FarmhouseAPI.goldMedals,
@@ -30,6 +31,10 @@ data class ItemTracker(val sources: Iterable<ItemSources> = ItemSources.entries)
         CurrencyType.NORTH_STAR to CurrencyAPI.northStars,
         CurrencyType.PELT to TrapperAPI.pelts,
         CurrencyType.GEM to CurrencyAPI.gems,
+        // CurrencyType.BINGO_POINT to 0,
+        CurrencyType.CARNIVAL_POINT to CarnivalAPI.tokens,
+        CurrencyType.KERNEL to CurrencyAPI.kernels,
+        // CurrencyType.PEST to 0,
     ).mapValues { (_, number) -> number.toInt() }.toMutableMap()
 
     val items = sources.mapNotNull { source -> source.itemSource?.getAll() }.flatten().filterNot { (item) -> item.isEmpty }

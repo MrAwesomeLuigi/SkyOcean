@@ -24,7 +24,7 @@ object IngredientParser {
         CurrencyType.COIN to CurrencyInformation("Coins"),
         CurrencyType.BIT to CurrencyInformation("Bits"),
         CurrencyType.COPPER to CurrencyInformation("Copper"),
-        CurrencyType.FOSSIL_DUST to CurrencyInformation("Fossil Dust"),
+        // CurrencyType.FOSSIL_DUST to CurrencyInformation("Fossil Essence"),
         CurrencyType.BRONZE_MEDAL to CurrencyInformation("Bronze medal", CurrencyFormatting.ITEM_LIKE),
         CurrencyType.SILVER_MEDAL to CurrencyInformation("Silver medal", CurrencyFormatting.ITEM_LIKE),
         CurrencyType.GOLD_MEDAL to CurrencyInformation("Gold medal", CurrencyFormatting.ITEM_LIKE),
@@ -33,6 +33,10 @@ object IngredientParser {
         CurrencyType.PELT to CurrencyInformation("Pelts"),
         CurrencyType.GEM to CurrencyInformation("Gems"),
         CurrencyType.CHOCOLATE to CurrencyInformation("Chocolate"),
+        // CurrencyType.BINGO_POINT to CurrencyInformation("Bingo Points"),
+        CurrencyType.CARNIVAL_POINT to CurrencyInformation("Carnival Tokens"),
+        CurrencyType.KERNEL to CurrencyInformation("Kernels"),
+        // CurrencyType.PEST to CurrencyInformation("Pests"),
     )
     val currencyRegex = Regex(
         buildString {
