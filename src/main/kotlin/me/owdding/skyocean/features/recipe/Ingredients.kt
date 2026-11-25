@@ -32,6 +32,7 @@ import tech.thatgravyboat.repolib.api.recipes.ingredient.AttributeIngredient as 
 import tech.thatgravyboat.repolib.api.recipes.ingredient.EnchantmentIngredient as RepoEnchantmentIngredient
 import tech.thatgravyboat.repolib.api.recipes.ingredient.ItemIngredient as RepoItemIngredient
 import tech.thatgravyboat.repolib.api.recipes.ingredient.PetIngredient as RepoPetIngredient
+import tech.thatgravyboat.repolib.api.recipes.ingredient.CurrencyIngredient as RepoCurrencyIngredient
 
 @GenerateDispatchCodec(Ingredient::class)
 enum class IngredientType(override val type: KClass<out Ingredient>) : DispatchHelper<Ingredient> {
@@ -147,13 +148,12 @@ fun Iterable<Ingredient>.mergeSameTypes(): Iterable<Ingredient> = this.groupBy {
 
 
 fun CraftingIngredient.toSkyOceanIngredient(): Ingredient? {
-    val id = this.id() ?: return null
-
     return when (this) {
-        is RepoItemIngredient -> SkyOceanItemIngredient(SkyBlockId.item(id), this.count())
-        is RepoPetIngredient -> SkyOceanItemIngredient(SkyBlockId.pet(id, this.tier()), this.count())
-        is RepoEnchantmentIngredient -> SkyOceanItemIngredient(SkyBlockId.enchantment(id, this.level()), this.count())
-        is RepoAttributeIngredient -> SkyOceanItemIngredient(SkyBlockId.attribute(id), this.count())
+        is RepoItemIngredient -> SkyOceanItemIngredient(SkyBlockId.item(this.id()), this.count())
+        is RepoPetIngredient -> SkyOceanItemIngredient(SkyBlockId.pet(this.id(), this.tier()), this.count())
+        is RepoEnchantmentIngredient -> SkyOceanItemIngredient(SkyBlockId.enchantment(this.id(), this.level()), this.count())
+        is RepoAttributeIngredient -> SkyOceanItemIngredient(SkyBlockId.attribute(this.id()), this.count())
+        is RepoCurrencyIngredient -> CurrencyIngredient(this.count(), CurrencyType.entries.firstOrNull { it.name == this.currency() } ?: return null)
         else -> null
     }
 }
